@@ -48,9 +48,8 @@ jobs:
       - name: Download CEF static library
         if: steps.cef-cache.outputs.cache-hit != 'true'
         run: |
-          curl -L https://github.com/ZOTTCE/samp-cef/releases/download/v1.1-beta/libcef.lib -o libcef.lib
-          mkdir $CEF_PATH
-          mv libcef.lib $CEF_PATH/libcef.lib
+          mkdir -p $CEF_PATH
+          curl -L https://github.com/ZOTTCE/samp-cef/releases/download/v1.1-beta/libcef.lib -o $CEF_PATH/libcef.lib
 
       - name: Install nightly rust
         uses: actions-rs/toolchain@v1
