@@ -2,97 +2,98 @@ name: Rust
 
 on:
   push:
-    branches: [master]
+    branches: [ master ]
   pull_request:
-    branches: [master]
+    branches: [ master ]
   workflow_dispatch:
 
 env:
   CARGO_TERM_COLOR: always
-  DX_SDK_DIR: ${{ env.TEMP }}/dxsdk
-  DX_SDK: ${{ env.TEMP }}/dxsdk/Lib/x86
-  CEF_PATH: ${{ env.TEMP }}/cef
 
 jobs:
   build_client:
     runs-on: windows-latest
     steps:
-      - name: Set up environment variables
-        run: |
-          Write-Output "DX_SDK_DIR=$DX_SDK_DIR" >> $GITHUB_ENV
-          Write-Output "DX_SDK=$DX_SDK" >> $GITHUB_ENV
-          Write-Output "CEF_PATH=$CEF_PATH" >> $GITHUB_ENV
+    - name: Configuration
+      run: |
+        Write-Output "DX_SDK_DIR=${env:TEMP}/dxsdk" >> ${env:GITHUB_ENV}
+        Write-Output "DX_SDK=${env:TEMP}/dxsdk/Lib/x86" >> ${env:GITHUB_ENV}
+        Write-Output "CEF_PATH=${env:TEMP}/cef" >> ${env:GITHUB_ENV}
 
-      - name: DirectX SDK cache
-        id: dx-cache
-        uses: actions/cache@v2
-        with:
-          path: ${{ env.DX_SDK_DIR }}
-          key: directx
+    - name: DirectX SDK cache
+      id: dx-cache
+      uses: actions/cache@v2
+      with:
+        path: ${{ env.DX_SDK_DIR }}
+        key: directx
 
-      - name: CEF static library cache
-        id: cef-cache
-        uses: actions/cache@v2
-        with:
-          path: ${{ env.CEF_PATH }}
-          key: libcef
+    - name: CEF static library cache
+      id: cef-cache
+      uses: actions/cache@v2
+      with:
+        path: ${{ env.CEF_PATH }}
+        key: libcef
 
-      - name: Install DirectX SDK
-        if: steps.dx-cache.outputs.cache-hit != 'true'
-        run: |
-          curl -L https://download.microsoft.com/download/a/e/7/ae743f1f-632b-4809-87a9-aa1bb3458e31/DXSDK_Jun10.exe -o _DX2010_.exe
-          7z x _DX2010_.exe DXSDK/Lib/x86 -o_DX2010_
-          mv _DX2010_/DXSDK $DX_SDK_DIR
-          rm -fR _DX*_ _DX*_.exe
+    - name: Install DirectX SDK
+      if: steps.dx-cache.outputs.cache-hit != 'true'
+      run: |
+        curl -L https://download.microsoft.com/download/a/e/7/ae743f1f-632b-4809-87a9-aa1bb3458e31/DXSDK_Jun10.exe -o _DX2010_.exe
+        7z x _DX2010_.exe DXSDK/Lib/x86 -o_DX2010_
+        mv _DX2010_/DXSDK $DX_SDK_DIR
+        rm -fR _DX*_ _DX*_.exe
+      shell: bash
 
-      - name: Download CEF static library
-        if: steps.cef-cache.outputs.cache-hit != 'true'
-        run: |
-          mkdir -p $CEF_PATH
-          curl -L https://github.com/ZOTTCE/samp-cef/releases/download/v1.1-beta/libcef.lib -o $CEF_PATH/libcef.lib
+    - name: Download CEF static library
+      if: steps.cef-cache.outputs.cache-hit != 'true'
+      run: |
+        curl -L https://github.com/ZOTTCE/samp-cef/releases/download/v1.1-beta/libcef.lib -o libcef.lib
+        mkdir $CEF_PATH
+        mv libcef.lib $CEF_PATH/libcef.lib
+      shell: bash
 
-      - name: Install nightly rust
-        uses: actions-rs/toolchain@v1
-        with:
-          toolchain: nightly-i686-pc-windows-msvc
-          override: true
+    - name: Install nightly rust
+      uses: actions-rs/toolchain@v1
+      with:
+        toolchain: nightly-i686-pc-windows-msvc
+        override: true
 
-      - uses: actions/checkout@v2
+    - uses: actions/checkout@v2
+    - name: Build client
+      run: cargo build --release
+      shell: bash
 
-      - name: Build client
-        run: cargo build --release
+    - name: Make a package
+      run: |
+        mkdir redist && cd redist
+        curl -L https://github.com/ZOTTCE/samp-cef/releases/download/v1.1-beta/cef.zip -o cef_redist.zip
+        7z x cef_redist.zip -ocef
+        cp ../target/release/client.dll cef/client.dll
+        cp ../target/release/renderer.exe cef/renderer.exe
+        cp ../target/release/loader.dll cef.asi
+        7z a -tzip cef.zip cef.asi cef
+      shell: bash
 
-      - name: Make a package
-        run: |
-          mkdir -p redist && cd redist || exit 1
-          curl -L https://github.com/ZOTTCE/samp-cef/releases/download/v1.1-beta/cef.zip -o cef_redist.zip
-          7z x cef_redist.zip -ocef
-          cp ../target/release/client.dll cef/client.dll
-          cp ../target/release/renderer.exe cef/renderer.exe
-          cp ../target/release/loader.dll cef.asi
-          7z a -tzip cef.zip cef.asi cef || exit 1
+    - uses: actions/upload-artifact@v2
+      with:
+        name: client.dll
+        path: target/release/client.dll
 
-      - uses: actions/upload-artifact@v2
-        with:
-          name: client.dll
-          path: target/release/client.dll
+    - uses: actions/upload-artifact@v2
+      with:
+        name: renderer.exe
+        path: target/release/renderer.exe
 
-      - uses: actions/upload-artifact@v2
-        with:
-          name: renderer.exe
-          path: target/release/renderer.exe
+    - uses: actions/upload-artifact@v2
+      with:
+        name: cef.asi
+        path: target/release/loader.dll
 
-      - uses: actions/upload-artifact@v2
-        with:
-          name: cef.asi
-          path: target/release/loader.dll
+    - uses: actions/upload-artifact@v2
+      with:
+        name: cef-windows.dll
+        path: target/release/server.dll
 
-      - uses: actions/upload-artifact@v2
-        with:
-          name: cef-windows.dll  # Correct the name if necessary
-          path: target/release/server.dll
-
-      - uses: actions/upload-artifact@v2
-        with:
-          name: cef.zip
-          path: redist/cef.zip
+    - uses: actions/upload-artifact@v2
+      with:
+        name: cef.zip
+        path: redist/cef.zip
