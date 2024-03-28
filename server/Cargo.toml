@@ -1,0 +1,17 @@
+[package]
+name = "server"
+version = "0.1.0"
+authors = ["ZOTTCE <zottce@gmail.com>"]
+edition = "2018"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+samp = { git = "https://github.com/zottce/samp-rs.git", branch = "potential-fix", features = ["encoding"] }
+log = "0.4.6"
+crossbeam-channel = "0.5.1"
+messages = { path = "../messages" }
+quick-protobuf = "0.8.0"
+network = { path = "../network" }
+simplelog = "0.10.2"

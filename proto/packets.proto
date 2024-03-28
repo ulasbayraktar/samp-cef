@@ -1,0 +1,120 @@
+enum PacketId {
+    // client side
+    OPEN_CONNECTION = 0;
+    REQUEST_JOIN = 1;
+
+    // server side
+    JOIN_RESPONSE = 2;
+    CREATE_BROWSER = 3;
+    DESTROY_BROWSER = 4;
+    ALWAYS_LISTEN_KEYS = 5;
+    HIDE_BROWSER = 6;
+    FOCUS_BROWSER = 7;
+    CREATE_EXTERNAL_BROWSER = 11;
+    APPEND_TO_OBJECT = 12;
+    REMOVE_FROM_OBJECT = 13;
+    TOGGLE_DEV_TOOLS = 14;
+    SET_AUDIO_SETTINGS = 15;
+    LOAD_URL = 16;
+
+    // client/server side
+    EMIT_EVENT = 8;
+    BROWSER_CREATED = 9;
+    GOT = 10;
+}
+
+message Packet {
+    required PacketId packet_id = 1;
+    required bytes bytes = 2;
+}
+
+message RequestJoin {
+    required int32 plugin_version = 1;
+}
+
+message JoinResponse {
+    required bool success = 1;
+    optional int32 current_version = 2;
+}
+
+message CreateBrowser {
+    required uint32 browser_id = 1;
+    required string url = 2;
+    required bool hidden = 3;
+    required bool focused = 4;
+}
+
+message DestroyBrowser {
+    required uint32 browser_id = 1;
+}
+
+message AlwaysListenKeys {
+    required uint32 browser_id = 1;
+    required bool listen = 2;
+}
+
+message EmitEvent {
+    required string event_name = 1;
+    optional string args = 2;
+    repeated EventValue arguments = 3;
+}
+
+message HideBrowser {
+    required uint32 browser_id = 1;
+    required bool hide = 2;
+}
+
+message FocusBrowser {
+    required uint32 browser_id = 1;
+    required bool focused = 2;
+}
+
+message EventValue {
+    optional string string_value = 1;
+    optional float float_value = 2;
+    optional int32 integer_value = 3;
+}
+
+message BrowserCreated {
+    required uint32 browser_id = 1;
+    required int32 status_code = 2;
+}
+
+message Got {
+
+}
+
+message OpenConnection {}
+
+message CreateExternalBrowser {
+    required uint32 browser_id = 1;
+    required string url = 2;
+    required int32 scale = 3;
+    required string texture = 4;
+}
+
+message AppendToObject {
+    required uint32 browser_id = 1;
+    required int32 object_id = 2;
+}
+
+message RemoveFromObject {
+    required uint32 browser_id = 1;
+    required int32 object_id = 2;
+}
+
+message ToggleDevTools {
+    required uint32 browser_id = 1;
+    required bool enabled = 2;
+}
+
+message SetAudioSettings {
+    required uint32 browser_id = 1;
+    required float max_distance = 2;
+    required float reference_distance = 3;
+}
+
+message LoadUrl {
+    required uint32 browser_id = 1;
+    required string url = 2;
+}
