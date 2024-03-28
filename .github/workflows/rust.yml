@@ -54,7 +54,7 @@ jobs:
     - name: Install nightly rust
       uses: actions-rs/toolchain@v1
       with:
-        toolchain: nightly-2022-11-06-i686
+        toolchain: nightly-i686-pc-windows-msvc
         override: true
 
     - uses: actions/checkout@v2
