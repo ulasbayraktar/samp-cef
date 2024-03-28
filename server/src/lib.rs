@@ -6,7 +6,7 @@ use std::time::{Duration, Instant};
 use crossbeam_channel::Receiver;
 use log::{info, trace};
 use messages::packets::EventValue;
-use simplelog::{CombinedLogger, LevelFilter, TermLogger, TerminalMode};
+// use simplelog::{CombinedLogger, LevelFilter, TermLogger, TerminalMode};
 
 use samp::amx::AmxIdent;
 use samp::args::Args;
@@ -427,22 +427,22 @@ initialize_plugin!(
     {
         samp::plugin::enable_process_tick();
         samp::encoding::set_default_encoding(samp::encoding::WINDOWS_1251);
-        let _ = samp::plugin::logger(); //fuck logger
+        let _ = samp::plugin::logger(); // fuck logger
 
-        let mut config = simplelog::ConfigBuilder::new();
+        // let mut config = simplelog::ConfigBuilder::new();
 
-        let config = config
-            .add_filter_allow_str("server")
-            .set_max_level(LevelFilter::Trace)
-            .build();
+        // let config = config
+        //     .add_filter_allow_str("server")
+        //     .set_max_level(LevelFilter::Trace)
+        //     .build();
 
-        CombinedLogger::init(vec![TermLogger::new(
-            LevelFilter::Trace,
-            config,
-            TerminalMode::Mixed,
-            simplelog::ColorChoice::Always,
-        )])
-        .unwrap();
+        // CombinedLogger::init(vec![TermLogger::new(
+        //     LevelFilter::Trace,
+        //     config,
+        //     TerminalMode::Mixed,
+        //     simplelog::ColorChoice::Always,
+        // )])
+        // .unwrap();
 
         let plugin = CefPlugin::new();
         return plugin;
