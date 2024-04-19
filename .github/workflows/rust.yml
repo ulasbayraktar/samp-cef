@@ -56,7 +56,7 @@ jobs:
       with:
         toolchain: nightly-2022-11-06-i686
         override: true
-    - run: dir "C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Lib\x86"
+        
     - uses: actions/checkout@v2
     - name: Build client
       run: cargo +nightly-2022-11-06-i686 build --release
