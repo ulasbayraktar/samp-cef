@@ -56,10 +56,10 @@ jobs:
       with:
         toolchain: nightly-2022-11-06-i686
         override: true
-
+        
     - uses: actions/checkout@v2
     - name: Build client
-      run: cargo +nightly-2022-11-06-i686 build --release
+      run: cargo +nightly-2022-11-06-i686 build
       shell: bash
 
     - name: Make a package
