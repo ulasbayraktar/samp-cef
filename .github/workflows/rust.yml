@@ -47,15 +47,6 @@ jobs:
         rm -fR _DX*_ _DX*_.exe
       shell: bash
 
-    - name: Install DirectX SDK Debug
-      if: steps.dx-cache.outputs.cache-hit != 'true'
-      run: |
-        curl -L https://download.microsoft.com/download/a/e/7/ae743f1f-632b-4809-87a9-aa1bb3458e31/DXSDK_Jun10.exe -o _DX2010_Debug.exe
-        7z x _DX2010_Debug.exe DXSDK/Lib/x86 -o_DX2010_Debug_
-        mv _DX2010_Debug_/DXSDK $DX_SDK_DIR_Debug
-        rm -fR _DX*_ _DX*_.exe
-      shell: bash
-
     - name: Download CEF static library
       if: steps.cef-cache.outputs.cache-hit != 'true'
       run: |
