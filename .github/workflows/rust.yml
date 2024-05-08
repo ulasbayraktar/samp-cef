@@ -20,14 +20,12 @@ jobs:
         Write-Output "DX_SDK=${env:TEMP}/dxsdk/Lib/x86" >> ${env:GITHUB_ENV}
         Write-Output "CEF_PATH=${env:TEMP}/cef" >> ${env:GITHUB_ENV}
 
-    - name: DirectX SDK cache
+    - name: Cache DirectX SDK Directory
       id: dx-cache
       uses: actions/cache@v3
-      env:
-        cache-name: cache-directx-modules
       with:
         path: ${{ env.DX_SDK_DIR }}
-        key: directx
+        key: directx-sdk
 
     - name: CEF static library cache
       id: cef-cache
