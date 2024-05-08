@@ -108,7 +108,7 @@ jobs:
 
     - name: DirectX SDK cache
       id: dx-cache
-      uses: actions/cache@v2
+      uses: actions/cache@v3
       env:
         cache-name: cache-directx-modules
       with:
@@ -117,9 +117,9 @@ jobs:
 
     - name: CEF static library cache
       id: cef-cache
-      uses: actions/cache@v2
+      uses: actions/cache@v3
       with:
-        path: ${{ env.CEF_PATH }}
+        path: ~/.ceflib
         key: libcef
 
     - name: Install DirectX SDK
@@ -142,7 +142,7 @@ jobs:
     - name: Install nightly rust
       uses: actions-rs/toolchain@v1
       with:
-        toolchain: nightly-i686-pc-windows-msvc
+        toolchain: nightly-2022-11-06
         override: true
 
     - uses: actions/checkout@v2
