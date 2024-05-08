@@ -13,7 +13,6 @@ env:
 jobs:
   build_client:
     runs-on: windows-latest
-    needs: create_cache
     steps:
     - name: Configuration
       run: |
