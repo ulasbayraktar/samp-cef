@@ -11,6 +11,92 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
+  build_server_ubuntu:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-20.04, ubuntu-18.04]
+
+    steps:
+    - name: Install nightly rust
+      uses: actions-rs/toolchain@v1
+      with:
+        toolchain: nightly-i686-unknown-linux-gnu
+        override: true
+    
+    - name: Install i386 deps
+      run: |
+        sudo dpkg --add-architecture i386 
+        sudo apt-get update 
+        sudo apt-get install build-essential g++-multilib -y
+
+    - uses: actions/checkout@v2
+    - name: Build server plugin
+      run: |
+        cargo build --package server --release
+        strip -s target/release/libserver.so -o stripped.so
+
+    - uses: actions/upload-artifact@v2
+      with:
+        name: cef-${{ matrix.os }}.so
+        path: stripped.so
+
+  build_server_centos:
+    runs-on: ubuntu-latest
+    container: centos:7.5.1804
+
+    steps:
+    - name: Install i386 deps
+      run: yum install git curl gcc g++ dpkg-dev make libgcc libgcc.i686 glibc-devel.i686 zlib.i686 zlib -y
+
+    - name: Install nightly rust
+      uses: actions-rs/toolchain@v1
+      with:
+        toolchain: nightly-i686-unknown-linux-gnu
+        override: true
+
+    - uses: actions/checkout@v2
+    - name: Build server plugin
+      run: |
+        cargo build --package server --release
+        strip -s target/release/libserver.so -o stripped.so
+
+    - uses: actions/upload-artifact@v2
+      with:
+        name: cef-centos-7.so
+        path: stripped.so
+
+  build_server_debian:
+    runs-on: ubuntu-latest
+    container: debian:${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [9, 10, 11]
+
+    steps:
+    - name: Install i386 deps
+      run: |
+        dpkg --add-architecture i386 
+        apt-get update
+        apt-get install build-essential curl make g++-multilib -y
+
+    - name: Install nightly rust
+      uses: actions-rs/toolchain@v1
+      with:
+        toolchain: nightly-i686-unknown-linux-gnu
+        override: true
+
+    - uses: actions/checkout@v2
+    - name: Build server plugin
+      run: |
+        cargo build --package server --release
+        strip -s target/release/libserver.so -o stripped.so
+
+    - uses: actions/upload-artifact@v2
+      with:
+        name: cef-debian-${{ matrix.os }}.so
+        path: stripped.so
+
   build_client:
     runs-on: windows-latest
     steps:
@@ -54,12 +140,12 @@ jobs:
     - name: Install nightly rust
       uses: actions-rs/toolchain@v1
       with:
-        toolchain: nightly-2022-11-06-i686
+        toolchain: nightly-i686-pc-windows-msvc
         override: true
-        
+
     - uses: actions/checkout@v2
     - name: Build client
-      run: cargo +nightly-2022-11-06-i686 build
+      run: cargo build --release
       shell: bash
 
     - name: Make a package
