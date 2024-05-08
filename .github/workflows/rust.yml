@@ -112,14 +112,16 @@ jobs:
       env:
         cache-name: cache-directx-modules
       with:
-        path: ~/.directx
+        path: ${{ env.DX_SDK_DIR }}
         key: directx
 
     - name: CEF static library cache
       id: cef-cache
+      env:
+        cache-name: cache-libcef-modules
       uses: actions/cache@v3
       with:
-        path: ~/.ceflib
+        path: ${{ env.CEF_PATH }}
         key: libcef
 
     - name: Install DirectX SDK
