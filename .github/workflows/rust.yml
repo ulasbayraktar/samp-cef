@@ -109,8 +109,10 @@ jobs:
     - name: DirectX SDK cache
       id: dx-cache
       uses: actions/cache@v2
+      env:
+        cache-name: cache-directx-modules
       with:
-        path: ${{ env.DX_SDK_DIR }}
+        path: ~/.directx
         key: directx
 
     - name: CEF static library cache
