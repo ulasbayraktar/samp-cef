@@ -11,25 +11,6 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  create_cache:
-    runs-on: ubuntu-latest
-    steps:
-    - name: Create DirectX SDK Cache
-      uses: actions/cache@v2
-      with:
-        path: ${{ env.DX_SDK_DIR }}
-        key: directx
-        restore-keys: |
-          ${{ runner.os }}-directx-
-
-    - name: Create CEF Library Cache
-      uses: actions/cache@v2
-      with:
-        path: ${{ env.CEF_PATH }}
-        key: libcef
-        restore-keys: |
-          ${{ runner.os }}-libcef-
-
   build_client:
     runs-on: windows-latest
     needs: create_cache
