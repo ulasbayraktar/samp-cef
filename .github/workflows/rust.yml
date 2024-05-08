@@ -11,94 +11,28 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  build_server_ubuntu:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-20.04, ubuntu-18.04]
-
-    steps:
-    - name: Install nightly rust
-      uses: actions-rs/toolchain@v1
-      with:
-        toolchain: nightly-i686-unknown-linux-gnu
-        override: true
-    
-    - name: Install i386 deps
-      run: |
-        sudo dpkg --add-architecture i386 
-        sudo apt-get update 
-        sudo apt-get install build-essential g++-multilib -y
-
-    - uses: actions/checkout@v2
-    - name: Build server plugin
-      run: |
-        cargo build --package server --release
-        strip -s target/release/libserver.so -o stripped.so
-
-    - uses: actions/upload-artifact@v2
-      with:
-        name: cef-${{ matrix.os }}.so
-        path: stripped.so
-
-  build_server_centos:
+  create_cache:
     runs-on: ubuntu-latest
-    container: centos:7.5.1804
-
     steps:
-    - name: Install i386 deps
-      run: yum install git curl gcc g++ dpkg-dev make libgcc libgcc.i686 glibc-devel.i686 zlib.i686 zlib -y
-
-    - name: Install nightly rust
-      uses: actions-rs/toolchain@v1
+    - name: Create DirectX SDK Cache
+      uses: actions/cache@v2
       with:
-        toolchain: nightly-i686-unknown-linux-gnu
-        override: true
+        path: ${{ env.DX_SDK_DIR }}
+        key: directx
+        restore-keys: |
+          ${{ runner.os }}-directx-
 
-    - uses: actions/checkout@v2
-    - name: Build server plugin
-      run: |
-        cargo build --package server --release
-        strip -s target/release/libserver.so -o stripped.so
-
-    - uses: actions/upload-artifact@v2
+    - name: Create CEF Library Cache
+      uses: actions/cache@v2
       with:
-        name: cef-centos-7.so
-        path: stripped.so
-
-  build_server_debian:
-    runs-on: ubuntu-latest
-    container: debian:${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [9, 10, 11]
-
-    steps:
-    - name: Install i386 deps
-      run: |
-        dpkg --add-architecture i386 
-        apt-get update
-        apt-get install build-essential curl make g++-multilib -y
-
-    - name: Install nightly rust
-      uses: actions-rs/toolchain@v1
-      with:
-        toolchain: nightly-i686-unknown-linux-gnu
-        override: true
-
-    - uses: actions/checkout@v2
-    - name: Build server plugin
-      run: |
-        cargo build --package server --release
-        strip -s target/release/libserver.so -o stripped.so
-
-    - uses: actions/upload-artifact@v2
-      with:
-        name: cef-debian-${{ matrix.os }}.so
-        path: stripped.so
+        path: ${{ env.CEF_PATH }}
+        key: libcef
+        restore-keys: |
+          ${{ runner.os }}-libcef-
 
   build_client:
     runs-on: windows-latest
+    needs: create_cache
     steps:
     - name: Configuration
       run: |
@@ -130,6 +64,15 @@ jobs:
         curl -L https://download.microsoft.com/download/a/e/7/ae743f1f-632b-4809-87a9-aa1bb3458e31/DXSDK_Jun10.exe -o _DX2010_.exe
         7z x _DX2010_.exe DXSDK/Lib/x86 -o_DX2010_
         mv _DX2010_/DXSDK $DX_SDK_DIR
+        rm -fR _DX*_ _DX*_.exe
+      shell: bash
+
+    - name: Install DirectX SDK Debug
+      if: steps.dx-cache.outputs.cache-hit != 'true'
+      run: |
+        curl -L https://download.microsoft.com/download/a/e/7/ae743f1f-632b-4809-87a9-aa1bb3458e31/DXSDK_Jun10.exe -o _DX2010_Debug.exe
+        7z x _DX2010_Debug.exe DXSDK/Lib/x86 -o_DX2010_Debug_
+        mv _DX2010_Debug_/DXSDK $DX_SDK_DIR_Debug
         rm -fR _DX*_ _DX*_.exe
       shell: bash
 
