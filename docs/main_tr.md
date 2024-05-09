@@ -166,7 +166,7 @@ Tarayıcının iki ek durumu daha vardır: `hidden` ve `focused`. İlk durum, ta
 
 Başka bir deyişle, bir websitesini youtube.com gibi bir yerde açtığınızda, oyunu kapatmadan veya bir tarayıcıyı modda silmeden asla çıkamazsınız.
 
-Bu iki durum birbirinden tamamen bağımsızdır, yani tarayıcı `gizli = false` olabilir ancak aynı anda `focused = false` olabilir. Bu durumda, tarayıcı gösterilir ancak giriş erişimi olmaz ve oyuncu oyun içinde serbestçe eylemler gerçekleştirebilir.
+Bu iki durum birbirinden tamamen bağımsızdır, yani tarayıcı `hidden = false` olabilir ancak aynı anda `focused = false` olabilir. Bu durumda, tarayıcı gösterilir ancak giriş erişimi olmaz ve oyuncu oyun içinde serbestçe eylemler gerçekleştirebilir.
 
 Oyun modundan etkileşim
 Kısacası: oyun modu yalnızca birkaç yerel işlevi kullanmalıdır (tarayıcıları oluşturma/silme, tarayıcıda olayları tetikleme ve onlara abone olma).
