@@ -58,7 +58,7 @@ jobs:
         
     - uses: actions/checkout@v2
     - name: Build client
-      run: cargo +nightly-2022-11-06-i686 build
+      run: cargo +nightly-2022-11-06-i686 build --release
       shell: bash
 
     - name: Print Build Path
