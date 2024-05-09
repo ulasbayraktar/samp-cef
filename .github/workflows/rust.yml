@@ -60,13 +60,6 @@ jobs:
     - name: Build client
       run: cargo +nightly-2022-11-06-i686 build --release
       shell: bash
-
-    - name: Print Build Path
-      run: |
-        echo "Current Directory: $(pwd)"
-        echo "Build Path: ${{ github.workspace }}"
-        echo "Files in Build Path:"
-        ls -R "${{ github.workspace }}"
         
     - name: Make a package
       run: |
