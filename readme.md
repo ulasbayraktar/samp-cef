@@ -19,6 +19,7 @@ It is **a FRAMEWORK** (or SDK), not something that you download and use. To be a
 ### Steps
 - Download latest `server.dll` and `cef.inc`
 - Place the file named `cef.inc` into the `pawno/plugins` directory, and put the file named `server.dll` into the `plugins` directory.
+- Define `server.dll` as a plugin in the server configuration file.
 - Define to `cef.inc` on gamemode.
 
 ## Crates
