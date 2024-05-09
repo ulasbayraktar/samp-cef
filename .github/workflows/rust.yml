@@ -126,6 +126,7 @@ jobs:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
         asset_path: target/release/client.dll
         asset_name: client.dll
+        asset_content_type: application/octet-stream
     
     - name: Upload Release Asset (renderer.exe)
       id: upload_renderer_exe
@@ -136,6 +137,7 @@ jobs:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
         asset_path: target/release/renderer.exe
         asset_name: renderer.exe
+        asset_content_type: application/octet-stream
     
     - name: Upload Release Asset (loader.dll)
       id: upload_loader_dll
@@ -146,6 +148,7 @@ jobs:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
         asset_path: target/release/loader.dll
         asset_name: loader.dll
+        asset_content_type: application/octet-stream
     
     - name: Upload Release Asset (server.dll)
       id: upload_server_dll
@@ -156,6 +159,7 @@ jobs:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
         asset_path: target/release/server.dll
         asset_name: server.dll
+        asset_content_type: application/octet-stream
     
     - name: Upload Release Asset (cef.zip)
       id: upload_cef_zip
@@ -166,3 +170,4 @@ jobs:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
         asset_path: redist/cef.zip
         asset_name: cef.zip
+        asset_content_type: application/octet-stream
