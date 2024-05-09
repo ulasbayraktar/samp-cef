@@ -112,6 +112,8 @@ jobs:
       with:
         tag_name: Release
         release_name: Release
+        body: |
+            cef-win-x86.zip added.
         draft: false
         prerelease: false
     
