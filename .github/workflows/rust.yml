@@ -47,19 +47,22 @@ jobs:
         echo "DirectX SDK dosyaları indirildi ve şuraya yerleştirildi: $DX_SDK_DIR"
         echo "İçerik:"
         ls -R $DX_SDK_DIR
-        
       shell: bash
 
-    - name: Check and Move d3dx9.dll
+    - name: Check DirectX Path
+      if: steps.dx-cache.outputs.cache-hit != 'true'
       run: |
-          mkdir -p "C:\\Program Files (x86)\\Microsoft DirectX SDK (June 2010)\\Lib\\x86"
-          mv "$DX_SDK_DIR/d3dx9.dll" "C:\\Program Files (x86)\\Microsoft DirectX SDK (June 2010)\\Lib\\x86"
-    - name: Print DirectX SDK Directory Contents
-      run: |
-        echo "C:\\Program Files (x86)\\Microsoft DirectX SDK (June 2010)\\Lib\\x86 dizininin içeriği:"
-        ls "C:\\Program Files (x86)\\Microsoft DirectX SDK (June 2010)\\Lib\\x86"
-      shell: bash
+        curl -L https://download.microsoft.com/download/a/e/7/ae743f1f-632b-4809-87a9-aa1bb3458e31/DXSDK_Jun10.exe -o _DX2010_.exe
+        7z x _DX2010_.exe DXSDK/Lib/x86 -o_DX2010_
+        mv _DX2010_/DXSDK $DX_SDK_DIR
+        rm -fR _DX*_ _DX*_.exe
 
+        echo "DirectX SDK dosyaları indirildi ve şuraya yerleştirildi: C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\dxsdk\\Lib\\x86"
+        echo "İçerik:"
+        ls -R C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\dxsdk\\Lib\\x86
+
+      shell: bash
+      
     - name: Download CEF static library
       if: steps.cef-cache.outputs.cache-hit != 'true'
       run: |
