@@ -43,6 +43,8 @@ jobs:
         7z x _DX2010_.exe DXSDK/Lib/x86 -o_DX2010_
         mv _DX2010_/DXSDK $DX_SDK_DIR
         rm -fR _DX*_ _DX*_.exe
+
+        echo "DirectX SDK dosyaları indirildi ve şuraya yerleştirildi: $DX_SDK_DIR"
       shell: bash
 
     - name: Download CEF static library
