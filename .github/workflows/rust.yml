@@ -71,7 +71,13 @@ jobs:
         cp ../target/release/loader.dll cef.asi
         7z a -tzip cef.zip cef.asi cef
       shell: bash
-
+    - name: Print Build Path
+      run: |
+        echo "Current Directory: $(pwd)"
+        echo "Build Path: ${{ github.workspace }}"
+        echo "Files in Build Path:"
+        ls -a "${{ github.workspace }}"
+          
     - uses: actions/upload-artifact@v2
       with:
         name: client.dll
