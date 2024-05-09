@@ -48,7 +48,7 @@ jobs:
         echo "İçerik:"
         ls -R $DX_SDK_DIR
         
-      shell: cmd
+      shell: bash
 
     - name: Check and Move d3dx9.dll
       run: |
@@ -61,7 +61,7 @@ jobs:
       run: |
         echo "C:\\Program Files (x86)\\Microsoft DirectX SDK (June 2010)\\Lib\\x86 dizininin içeriği:"
         ls "C:\\Program Files (x86)\\Microsoft DirectX SDK (June 2010)\\Lib\\x86"
-      shell: cmd
+      shell: bash
 
     - name: Download CEF static library
       if: steps.cef-cache.outputs.cache-hit != 'true'
@@ -69,7 +69,7 @@ jobs:
         curl -L https://github.com/ZOTTCE/samp-cef/releases/download/v1.1-beta/libcef.lib -o libcef.lib
         mkdir $CEF_PATH
         mv libcef.lib $CEF_PATH/libcef.lib
-      shell: cmd
+      shell: bash
 
     - name: Install nightly rust
       uses: actions-rs/toolchain@v1
@@ -80,7 +80,7 @@ jobs:
     - uses: actions/checkout@v2
     - name: Build client
       run: cargo +nightly-2022-11-06 b
-      shell: cmd
+      shell: bash
 
     - name: Make a package
       run: |
@@ -91,7 +91,7 @@ jobs:
         cp ../target/release/renderer.exe cef/renderer.exe
         cp ../target/release/loader.dll cef.asi
         7z a -tzip cef.zip cef.asi cef
-      shell: cmd
+      shell: bash
 
     - uses: actions/upload-artifact@v2
       with:
