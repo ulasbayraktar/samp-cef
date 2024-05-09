@@ -3,7 +3,7 @@ This project embeds CEF into SA:MP expanding abilities to express yourself with 
 
 It is **a FRAMEWORK** (or SDK), not something that you download and use. To be able to create you should have some webdev basics (JS / HTML / CSS).
 
-## What you can do
+## What you can do?
 - Create browser views from a gamemode or from client-side plugins (C ABI).
 - Place browsers on objects (with kind-of spatial sound)
 - Send and receive custom defined events from / to clients.
