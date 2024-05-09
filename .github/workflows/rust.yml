@@ -113,30 +113,56 @@ jobs:
         tag_name: Release
         release_name: Release
         body: |
-            cef-win-x86.zip added.
+            SA-MP CEF Remastered
         draft: false
         prerelease: false
     
-    - name: Bundle Files
-      run: |
-          mkdir bundled_files
-          cp target/release/client.dll bundled_files/client.dll
-          cp target/release/renderer.exe bundled_files/renderer.exe
-          cp target/release/loader.dll bundled_files/loader.dll
-          cp target/release/server.dll bundled_files/server.dll
-          cp redist/cef.zip bundled_files/cef.zip
-          cd bundled_files
-          7z a -tzip cef-win-x86.zip *
-      shell: bash
-
-    
-    - name: Upload Release Asset
-      id: upload_release_asset
+    - name: Upload Release Asset (client.dll)
+      id: upload_client_dll
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: bundled_files/cef-win-x86.zip
-        asset_name: cef-win-x86.zip
-        asset_content_type: application/zip
+        asset_path: target/release/client.dll
+        asset_name: client.dll
+    
+    - name: Upload Release Asset (renderer.exe)
+      id: upload_renderer_exe
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: target/release/renderer.exe
+        asset_name: renderer.exe
+    
+    - name: Upload Release Asset (loader.dll)
+      id: upload_loader_dll
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: target/release/loader.dll
+        asset_name: loader.dll
+    
+    - name: Upload Release Asset (server.dll)
+      id: upload_server_dll
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: target/release/server.dll
+        asset_name: server.dll
+    
+    - name: Upload Release Asset (cef.zip)
+      id: upload_cef_zip
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: redist/cef.zip
+        asset_name: cef.zip
