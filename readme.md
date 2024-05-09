@@ -41,13 +41,6 @@ It is **a FRAMEWORK** (or SDK), not something that you download and use. To be a
 - `renderer` - glue between CEF renderer process and main logic.
 - `server` - server side plugin.
 - 
-Currently there is those OS:
-- <s>CentOS 7 (`cef-centos-7.so`)</s>
-- <s>Debian 9, 10, 11 (`cef-debian-*.so`)</s>
-- <s>Ubuntu 18.04, 20.04 (`cef-ubuntu-*.so`)</s>
-- Windows (`cef-windows.dll`)
-
-And also all client-side parts (`cef.asi`, `client.dll`, `renderer.exe`).
 
 ## Building
 ### Dependencies
