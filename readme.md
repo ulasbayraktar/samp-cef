@@ -8,14 +8,14 @@ It is **a FRAMEWORK** (or SDK), not something that you download and use. To be a
 - Place browsers on objects (with kind-of spatial sound)
 - Send and receive custom defined events from / to clients.
 
-## Install - Client-side
+## Install - For player
 ### Dependencies
 - `SAMPFUNCS` - For the version you want (if you want for SA-MP 0.3.7, you should download `SAMPFUNCS 0.3.7`)
 ### Steps
 - Download latest version (cef.zip)
 - Put the files from the ZIP into the directory where GTA is installed.
 
-## Install - Server-side
+## Install - For server
 ### Steps
 - Download latest `server.dll` and `cef.inc`
 - Place the file named `cef.inc` into the `pawno/plugins` directory, and put the file named `server.dll` into the `plugins` directory.
