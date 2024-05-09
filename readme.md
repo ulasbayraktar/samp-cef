@@ -115,7 +115,7 @@ Chromium URL:     https://chromium.googlesource.com/chromium/src.git
 - [Simple interfaces](https://www.youtube.com/watch?v=jU-O8_t1AfI)
 - [Custom GTA interface](https://www.youtube.com/watch?v=qs7n8LoVYs4)
 - [Voice chat](https://www.youtube.com/watch?v=vcyTjn3RJhs)
-- [Cef Object #2](https://www.youtube.com/watch?v=6OnCSHKcOGU)
+- [CEF Object #2](https://www.youtube.com/watch?v=6OnCSHKcOGU)
 
 ## Credit / Important Note
 This project is a **fork project**. 
