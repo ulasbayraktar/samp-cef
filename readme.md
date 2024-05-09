@@ -8,6 +8,11 @@ It is **a FRAMEWORK** (or SDK), not something that you download and use. To be a
 - Place browsers on objects (with kind-of spatial sound)
 - Send and receive custom defined events from / to clients.
 
+## Avaiable SA-MP Version
+- `0.3.7-R1`
+- `0.3.DL-R1` - OnCefInitialize returning `true` but not working, wrong SA-MP addresses
+
+
 ## Install - For player
 ### Dependencies
 - `SAMPFUNCS` - For the version you want (if you want for SA-MP 0.3.7, you should download `SAMPFUNCS 0.3.7`)
