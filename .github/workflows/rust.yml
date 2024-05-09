@@ -103,3 +103,37 @@ jobs:
       with:
         name: cef.zip
         path: redist/cef.zip
+
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: Release ${{ github.ref }}
+        draft: false
+        prerelease: false
+    
+    - name: Bundle Files
+      run: |
+        mkdir bundled_files
+        cp target/release/client.dll bundled_files/client.dll
+        cp target/release/renderer.exe bundled_files/renderer.exe
+        cp target/release/loader.dll bundled_files/loader.dll
+        cp target/release/server.dll bundled_files/server.dll
+        cp redist/cef.zip bundled_files/cef.zip
+        cd bundled_files
+        zip -r cef_bundle.zip *
+      shell: bash
+    
+    - name: Upload Release Asset
+      id: upload_release_asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: bundled_files/cef_bundle.zip
+        asset_name: cef_bundle.zip
+        asset_content_type: application/zip
