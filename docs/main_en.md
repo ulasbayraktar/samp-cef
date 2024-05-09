@@ -1,8 +1,7 @@
-
-## File structure
-- The `cef.asi` should be in the game root folder (builded as `loader.dll`).
-- Also `cef` folder should be placed there.
-- There is a `CEF` dir at `Documents/GTA San Andreas User Files/CEF/`, where is Chromium cookies, caches and so on.
+## Structure
+- The file `cef.asi` should be located in the root folder of the game (compiled as `loader.dll`).
+- The folder `cef` with all its contents should also be there.
+- Additionally, a folder named `CEF` is created at `My Documents/GTA San Andreas User Files/CEF/`, where cache, cookie files, and other necessary things for the correct operation of Chromium are stored.
 - `gta_sa.exe`
 - `cef.asi`
 - `cef/`
@@ -11,147 +10,165 @@
     - `renderer.exe`
     - etc …
 
-
-## Tips and some limitations
-- You should have one browser for all your interfaces to achieve best performance. They can communicate using built-in event system.
-- If there is plugins that use relative paths, it could lead to some unexpected things (like `cleo_text` and `cleo_saves` may be placed at `cef` folder). So, please, use absolute paths!
+## Tips for Usage and Some Limitations
+- Ideally, have one browser with all interfaces. Do not create new ones for different actions, but use the built-in event system.
+- If there are client plugins that use relative paths, they will likely break and work incorrectly. Unfortunately, at the moment of initialization, the current directory changes in another thread. As an example: the CLEO library can create its log `cleo.log`, as well as the folders `cleo_text` and `cleo_saves` in the `cef` folder. For correct operation, it is better to determine the path to the current executable file (`gta_sa.exe`).
 
 ## Pawn API
 
 `cef_create_browser(player_id, browser_id, const url[], hidden, focused)`
 
-Creates a browser for a player. `browser_id` can be any ID (like in SAMP dialogs). `focused` means it hooks all input and passes it in the browser.
+Creates a browser for the specified player.
 
 `cef_destroy_browser(player_id, browser_id)`
 
-Deletes a browser.
+Destroys the browser.
 
 `cef_hide_browser(player_id, browser_id, hide)`
 
-Hides a browser.
+Hides the browser.
 
 `cef_emit_event(player_id, const event_name[], args…)`
 
-Call a client event. Supported types of arguments: `string`, `integer`, `float`.
+Triggers an event on the client. Supported argument types: `string`, `integer`, `float`.
 
 `cef_subscribe(const event_name[], const callback[])`
 
-Subscribe for client events. Callback signature: `Callback(player_id, const arguments[])`, `arguments` is a string, delimiter of arguments is a space :DDDDD
+Subscribes to an event from the client. Callback function signature: `Callback(player_id, const arguments[])`
 
 `cef_player_has_plugin(player_id)`
 
-Check if a player has the plugin.
+Checks if the client has the plugin.
 
 `cef_create_ext_browser(player_id, browser_id, const texture[], const url[], scale)`
 
-Creates a browser that will be shown on a texture of an object in the future. `scale` arg multiplies texture by this value. `250x30` will be `1250x150` if scale is 5.
+Creates a browser as in the first case, but with a mark that it will be displayed on objects on a specific texture. The `scale` parameter indicates how many times the standard texture should be enlarged. For example, if the standard texture has a size of `250x30`, it will have a size of `1250x150` with the parameter set to 5 units.
 
 `cef_append_to_object(player_id, browser_id, object_id)`
 
-Changes a texture on an object with browser one. The browser should be created with `cef_create_ext_browser`.
+Replaces the texture of the specified object with the browser image on the client side. The browser must be created using `cef_create_ext_browser`, and the texture specified during creation must be present for correct display.
 
 `cef_remove_from_object(player_id, browser_id, object_id)`
 
-Return the default texture for an object.
+Restores the original texture of the object.
 
 `cef_toggle_dev_tools(player_id, browser_id, enabled)`
 
-Toggles dev tools.
+Enables/disables developer tools.
 
 `native cef_set_audio_settings(player_id, browser_id, Float:max_distance, Float:reference_distance)`
 
-Changes audio settings of a browser. `reference_distance` - distance while volume will be 1.0. Then decreases till `max_distance` when it will be 0.
+Sets the maximum audible distance for the browser on the object. `reference_distance` is the distance at which maximum volume will be reached, and afterwards, the volume will decrease from `max_distance` to 0.
 
 `cef_focus_browser(player_id, browser_id, focused)`
 
-Makes a browser focused as it would be on creation with `focused = true`.
+Makes the browser focused. It comes to the foreground, receives all keyboard and mouse events. Same as passing the argument `focused = true` when creating the browser.
 
 `cef_always_listen_keys(player_id, browser_id, listen)`
 
-The browser starts listen to player input even if it is not focused. This allows you to add a JS key handler on background (`window.addEventListener("keyup")` for example).
+Allows the browser to receive keyboard input in the background, even if the browser is not focused or hidden. This allows using functions in JavaScript code to subscribe to keyboard events all the time. For example, you can open/close the interface by pressing a key (`window.addEventListener("keyup")`).
 
 `cef_load_url(player_id, browser_id, const url[])`
 
-Loads a new page with a given url (faster than destroy and recreate browser).
-### Handlers:
+Loads the specified URL for the given browser. Faster than recreating the browser.
+
+### There are also two built-in events in the plugin:
 
 `forward OnCefBrowserCreated(player_id, browser_id, status_code)`
 
-Called when a player has created a browser (from a server or a plugin). `status_code` will be 0 if there is some error. otherwise it is a HTTP response code (200, 404, etc).
+Called when the client creates a browser upon request from the server/plugin. The `status_code` value is either 0 (for unsuccessful creation) or an HTTP code (200, 404, etc).
 
 `forward OnCefInitialize(player_id, success)`
 
-Called when a player connected to the server with a plugin (or timed-out if there is no installed plugin). Kind of automatic `cef_player_has_plugin`.
+Called after the client connects to the CEF server, or when the timeout expires. Roughly speaking, it replaces the manual check `cef_player_has_plugin`.
 
 ## Browser API
 
+Browsers also have their own API for managing them.
+
 `cef.set_focus(focused)`
 
-Set a focus on a browser. It will be rendered last (means have high Z coord). Also can receive mouse and keyboard events.
+Focuses on the browser, allowing it to be on top of all other windows and to receive keyboard and mouse input.
 
 `cef.on(event_name, callback)`
-Subscribes for events from a server / client plugins.
+
+Subscribes to an event from the browser/other plugins.
 
 `cef.off(event_name, callback)`
 
-Unsub from an event.
+NOT IMPLEMENTED AT THE MOMENT
+Unsubscribes from an event. To use this function, you need to pass a variable that contains the callback function specified when subscribing to the event.
 
 `cef.hide(hide)`
 
-Hides a browser and mutes it.
+Hides the browser and mutes its sound.
 
 `cef.emit(event_name, args…)`
 
-Triggers an event with a given name. Arguments can be anything. BUT! On the server it will be a string splited by spaces. In client plugins there is full functionality.
+Triggers an event on the server/in external plugins with the specified arguments. Supports all types except objects with fields and functions. Note: in plugins, all types can be used normally, but on the server, all arguments are converted into a single string separated by spaces.
 
 ## C API
 
-THIS IS DEPRECATED AND NOT WORKING AT ALL!
+Not working, sorry.
 
-Check an rust example using C API (`cef-interface` crate) and `client/external.rs` to check the API.
+Working example in `cef-interface`, as well as API in `cef-api` and `client/external.rs`
 
 ```C++
     #include <cstdint>
     
-    // Do not call next event handlers for this event.
+    // Interrupt the continuation of event callbacks. Also, do not send it to the server.
     static const int EXTERNAL_BREAK = 1;
-    // Continue handling. If all handlers returns this, server will got the event.
+    // Continue execution. If nobody interrupted it, it will be sent to the server.
     static const int EXTERNAL_CONTINUE = 0;
     
     using BrowserReadyCallback = void(*)(uint32_t);
     using EventCallback = int(*)(const char*, cef_list_value_t*);
     
     extern "C" {
-        // Check if a browser exists.
+        // Check if a browser exists in the game.
         bool cef_browser_exists(uint32_t browser);
-        // Is a browser ready (created and the page is loaded)
+        // Whether the browser has been created and the website has been loaded.
         bool cef_browser_ready(uint32_t browser);
-        // Make a request to create a browser.
+        // Create a browser with the specified parameters. This function is asynchronous, the browser is not created immediately.
         void cef_create_browser(uint32_t id, const char *url, bool hidden, bool focused);
-        // Create `CefListValue`. THE CLIENT OWNS IT!!!
+        // Create a CefListValue inside the client.
         cef_list_value_t *cef_create_list();
-        // Destroy a browser.
+        // Destroy the browser on the client side.
         void cef_destroy_browser(uint32_t id);
-        // Trigger an event with given args.
+        // Trigger an event on the browser.
         void cef_emit_event(const char *event, cef_list_value_t *list);
-        // Focus a browser.
+        // Focus input on the browser and bring it to the top, as well as receive input from the keyboard and mouse.
         void cef_focus_browser(uint32_t id, bool focus);
-        // Check if a GTA window is active.
+        // Whether the game window is active.
         bool cef_gta_window_active();
-        // Hide a browser.
+        // Hide the browser.
         void cef_hide_browser(uint32_t id, bool hide);
-        // Can a browser receive input events now.
+        // Check if input is available for a specific browser.
         bool cef_input_available(uint32_t browser);
-        // Subscribe on browser ready events (like pawn one).
+        // Subscribe to the event of full browser creation.
         void cef_on_browser_ready(uint32_t browser, BrowserReadyCallback callback);
-        // Kind of deprecated
         bool cef_ready();
-        // Subscribe on an event.
+        // Subscribe to browser events.
         void cef_subscribe(const char *event, EventCallback callback);
-        // `cef_input_available` + `cef_focus_browser`, but atomic. This function should be used in this cases.
+        // Attempt to focus on the browser. Similar to a pair of `cef_input_available` + `cef_focus_browser`,
+        // but with one significant condition, between the execution of these two functions someone else may take focus.
+        // And this function is atomic, which allows you to check and immediately focus, ensuring
+        // that no one else can get focus at that time.
         bool cef_try_focus_browser(uint32_t browser);
     }
 ```
 
-Example?: https://gist.github.com/ZOTTCE/5c5bf3b63b1fec29c104e0085cd51f9f
-Alseo example? https://gist.github.com/ZOTTCE/7dee2d196138457772aa79355069014a
+
+## Instructions for Use
+
+### Description
+A browser can be created from two places: from the game mod and plugins.
+
+The browser has two additional states: `hidden` and `focused`. The first state controls whether the browser is displayed on the player's screen. The second state is more complex: if the browser is focused (`focused = true`), the player's camera freezes, a cursor appears, and all their input (from the keyboard and mouse) goes directly to the browser, bypassing GTA and SA:MP (except for some functions like taking a screenshot with F8). The player will never be able to exit this state on their own; you must facilitate this in the browser interface code. For example, you can listen for the ESC key press and when pressed, call `cef.set_focus(false)`.
+
+In other words, once you open a website like youtube.com in it, you can never exit it without closing the game or setting a timer to delete the browser in the mod.
+
+These two states are completely independent of each other, meaning the browser can be `hidden = false` but at the same time `focused = false`. In this case, the browser will be displayed, but it won't have input access, and the player can perform actions in the game freely.
+
+Interaction from the game mod
+In short: the game mod should use only a few native functions (creating/deleting browsers, triggering events in the browser, as well as subscribing to them).
