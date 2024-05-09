@@ -19,19 +19,16 @@ jobs:
         Write-Output "DX_SDK_DIR=${env:TEMP}/dxsdk" >> ${env:GITHUB_ENV}
         Write-Output "DX_SDK=${env:TEMP}/dxsdk/Lib/x86" >> ${env:GITHUB_ENV}
         Write-Output "CEF_PATH=${env:TEMP}/cef" >> ${env:GITHUB_ENV}
-
-    - name: Cache DirectX SDK Directory
+    - name: DirectX SDK cache
       id: dx-cache
-      uses: actions/cache@v3
+      uses: actions/cache@v2
       with:
         path: ${{ env.DX_SDK_DIR }}
-        key: directx-sdk
+        key: directx
 
     - name: CEF static library cache
       id: cef-cache
-      env:
-        cache-name: cache-libcef-modules
-      uses: actions/cache@v3
+      uses: actions/cache@v2
       with:
         path: ${{ env.CEF_PATH }}
         key: libcef
@@ -43,26 +40,8 @@ jobs:
         7z x _DX2010_.exe DXSDK/Lib/x86 -o_DX2010_
         mv _DX2010_/DXSDK $DX_SDK_DIR
         rm -fR _DX*_ _DX*_.exe
-
-        echo "DirectX SDK dosyaları indirildi ve şuraya yerleştirildi: $DX_SDK_DIR"
-        echo "İçerik:"
-        ls -R $DX_SDK_DIR
       shell: bash
 
-    - name: Check DirectX Path
-      if: steps.dx-cache.outputs.cache-hit != 'true'
-      run: |
-        curl -L https://download.microsoft.com/download/a/e/7/ae743f1f-632b-4809-87a9-aa1bb3458e31/DXSDK_Jun10.exe -o _DX2010_.exe
-        7z x _DX2010_.exe DXSDK/Lib/x86 -o_DX2010_
-        mv _DX2010_/DXSDK $DX_SDK_DIR
-        rm -fR _DX*_ _DX*_.exe
-
-        echo "DirectX SDK dosyaları indirildi ve şuraya yerleştirildi: C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\dxsdk\\Lib\\x86"
-        echo "İçerik:"
-        ls -R C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\dxsdk\\Lib\\x86
-
-      shell: bash
-      
     - name: Download CEF static library
       if: steps.cef-cache.outputs.cache-hit != 'true'
       run: |
@@ -74,12 +53,12 @@ jobs:
     - name: Install nightly rust
       uses: actions-rs/toolchain@v1
       with:
-        toolchain: nightly-2022-11-06
+        toolchain: nightly-2022-11-06-i686
         override: true
-
+        
     - uses: actions/checkout@v2
     - name: Build client
-      run: cargo +nightly-2022-11-06 b
+      run: cargo +nightly-2022-11-06-i686 build
       shell: bash
 
     - name: Make a package
