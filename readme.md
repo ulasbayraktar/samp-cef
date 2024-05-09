@@ -85,6 +85,12 @@ Chromium Version: 89.0.4389.40
 Chromium URL:     https://chromium.googlesource.com/chromium/src.git
                   @2c3400a2b467aa3cf67b4942740db29e60feecb8
 ```
+
+## Docs
+- [docs/main_en.md](/docs/main_en.md)
+- [docs/main_tr.md](/docs/main_tr.md)
+- Also, check out wiki on github.
+
 ## Video examples
 - [CEF Object #1](https://www.youtube.com/watch?v=Jh9IBlOKoVM)
 - [Simple interfaces](https://www.youtube.com/watch?v=jU-O8_t1AfI)
