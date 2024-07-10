@@ -53,12 +53,12 @@ jobs:
     - name: Install nightly rust
       uses: actions-rs/toolchain@v1
       with:
-        toolchain: nightly-2022-11-06
+        toolchain: nightly-i686-pc-windows-msvc
         override: true
         
     - uses: actions/checkout@v2
     - name: Build client
-      run: cargo +nightly-2022-11-06 build
+      run: cargo +nightly-i686-pc-windows-msvc build
       shell: bash
         
     - name: Make a package
