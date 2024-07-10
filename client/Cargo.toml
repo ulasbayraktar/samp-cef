@@ -23,7 +23,7 @@ d3dx9 = { path = "../d3dx9" }
 winapi = { version = "0.3.8", features = ["d3d9", "winuser", "libloaderapi", "winver", "consoleapi", "memoryapi", "shlobj"] }
 messages = { path = "../messages" }
 quick-protobuf = "0.8.0"
-detour = "0.8.1"
+detour = { git = "https://github.com/darfink/detour-rs", rev = "3b6f17a" }
 libloading = "0.7.0"
 alto = "3.0.4"
 log = "0.4.14"
