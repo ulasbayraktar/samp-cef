@@ -10,5 +10,5 @@ crate-type = ["cdylib"]
 [dependencies]
 cef = { path = "../cef" }
 cef-api = { path = "../cef-api" }
-client-api = { git = "https://github.com/ulasbayraktar/samp-client-api.git"}
+client-api = { git = "https://github.com/sa-mp-kr/samp-client-api-main.git", branch = "master"}
 region = "2.2.0"

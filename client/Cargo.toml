@@ -15,7 +15,7 @@ crash_logger = ["winapi/processthreadsapi", "winapi/psapi", "winapi/excpt"]
 
 [dependencies]
 encoding_rs = "0.8.20"
-client-api = { git = "https://github.com/ulasbayraktar/samp-client-api.git"}
+client-api = { git = "https://github.com/sa-mp-kr/samp-client-api-main.git", branch = "master"}
 cef = { path = "../cef" }
 cef-sys = { path = "../cef-sys" }
 crossbeam-channel = "0.5.1"
@@ -23,7 +23,7 @@ d3dx9 = { path = "../d3dx9" }
 winapi = { version = "0.3.8", features = ["d3d9", "winuser", "libloaderapi", "winver", "consoleapi", "memoryapi", "shlobj"] }
 messages = { path = "../messages" }
 quick-protobuf = "0.8.0"
-detour = { git = "https://github.com/darfink/detour-rs", rev = "3b6f17a" }
+detour = "0.8.1"
 libloading = "0.7.0"
 alto = "3.0.4"
 log = "0.4.14"
